@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sports Player | Android App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Material Design Android Variables */
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --primary-light: #64b5f6;
+            --secondary: #ff5722;
+            --surface: #ffffff;
+            --background: #f5f5f5;
+            --on-surface: #212121;
+            --on-surface-secondary: #757575;
+            --error: #f44336;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --border: #e0e0e0;
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            --shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        /* Dark Mode Variables */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --surface: #1e1e1e;
+                --background: #121212;
+                --on-surface: #ffffff;
+                --on-surface-secondary: #b0b0b0;
+                --border: #333333;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--background);
+            color: var(--on-surface);
+            line-height: 1.5;
+            font-size: 14px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Status Bar (Android Style) */
+        .status-bar {
+            background: var(--surface);
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--on-surface-secondary);
+            font-size: 12px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .status-bar .time {
+            font-weight: 600;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* App Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px 16px 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            opacity: 0.1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .app-name h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .app-name p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        /* Input Card (Material Design) */
+        .input-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-top: 16px;
+            box-shadow: var(--shadow-1);
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--on-surface);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-label i {
+            color: var(--primary);
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            color: var(--on-surface);
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--on-surface-secondary);
+        }
+
+        .material-button {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow-1);
+        }
+
+        .material-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .material-button:active {
+            transform: translateY(0);
+        }
+
+        .material-button.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow-1);
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(26, 115, 232, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--on-surface-secondary);
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 0 16px 16px;
+            display: none;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-field {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            color: var(--on-surface);
+            transition: var(--transition);
+            box-shadow: var(--shadow-1);
+        }
+
+        .search-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--on-surface-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+        }
+
+        .search-field:not(:placeholder-shown) + .clear-search {
+            display: block;
+        }
+
+        /* Events Grid (Android Style Cards) */
+        .events-grid {
+            padding: 0 16px 80px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .event-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-1);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        .event-card.hidden {
+            display: none;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 16px 8px;
+        }
+
+        .event-time {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-links {
+            background: rgba(26, 115, 232, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .event-body {
+            padding: 0 16px 12px;
+        }
+
+        .event-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--on-surface);
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .event-sport {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .event-footer {
+            padding: 12px 16px;
+            background: var(--background);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .event-quality {
+            font-size: 12px;
+            color: var(--on-surface-secondary);
+        }
+
+        .play-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .play-button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Status Message */
+        .status-message {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--on-surface-secondary);
+            font-size: 15px;
+        }
+
+        .status-message i {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: var(--primary);
+            opacity: 0.5;
+        }
+
+        .status-message.success {
+            color: var(--success);
+        }
+
+        .status-message.error {
+            color: var(--error);
+        }
+
+        /* Bottom Navigation (Android Style) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: var(--on-surface-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: var(--radius-md);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(26, 115, 232, 0.1);
+        }
+
+        .nav-item.refresh-active {
+            animation: spin 0.5s linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Player Overlay (Fullscreen Android Style) */
+        #player-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            z-index: 2000;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #player-overlay.active {
+            display: flex;
+        }
+
+        .player-header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .player-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .player-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .player-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .player-btn.close-btn:hover {
+            background: var(--error);
+        }
+
+        .link-switcher {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.6);
+            overflow-x: auto;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .link-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .link-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .link-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .video-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (min-width: 600px) {
+            .app-container {
+                max-width: 600px;
+                margin: 0 auto;
+                box-shadow: var(--shadow-3);
+                min-height: 100vh;
+            }
+            
+            .events-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .bottom-nav {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (min-width: 900px) {
+            .app-container {
+                max-width: 900px;
+            }
+            
+            .events-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .bottom-nav {
+                max-width: 900px;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .stat-card {
+                padding: 12px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+        }
+
+        /* Hide scrollbar but keep functionality */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--on-surface-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="app-title">
+                    <div class="app-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="app-name">
+                        <h1>Sports Player</h1>
+                        <p>📡 Live Streaming</p>
+                    </div>
+                </div>
+                
+                <div class="input-card">
+                    <div class="input-label">
+                        <i class="fas fa-key"></i>
+                        <span>Codice Eventi</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="fas fa-paste input-icon"></i>
+                        <input type="text" id="b64Input" class="input-field" placeholder="Incolla il codice qui..." value="">
+                    </div>
+                    <button id="loadBtn" class="material-button" onclick="loadList()">
+                        <i class="fas fa-satellite-dish"></i>
+                        CARICA EVENTI 
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <div class="stat-value" id="totalEvents">0</div>
+                <div class="stat-label">Eventi</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="stat-value" id="totalLinks">0</div>
+                <div class="stat-label">Link</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="updateTime">--:--</div>
+                <div class="stat-label">Aggiornato</div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container" id="searchContainer">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-field" placeholder="Cerca eventi...">
+                <button class="clear-search" onclick="clearSearch()">×</button>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="status" class="status-message">
+            <i class="fas fa-satellite-dish"></i>
+            <p>In attesa di Eventi</p>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="button-container" class="events-grid"></div>
+
+        <!-- Android Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="showHome()">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-item" onclick="showSearch()">
+                <i class="fas fa-search nav-icon"></i>
+                <span class="nav-label">Cerca</span>
+            </button>
+            <button class="nav-item" onclick="refreshEvents()">
+                <i class="fas fa-redo nav-icon"></i>
+                <span class="nav-label">Refresh</span>
+            </button>
+            <button class="nav-item" onclick="showInfo()">
+                <i class="fas fa-info-circle nav-icon"></i>
+                <span class="nav-label">Info</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Player Overlay -->
+    <div id="player-overlay">
+        <div class="player-header">
+            <div class="player-title" id="current-title">Streaming Live</div>
+            <div class="player-controls">
+                <button class="player-btn" id="refresh-player" title="Ricarica">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button class="player-btn" id="fullscreen-btn" title="Schermo Intero">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="player-btn close-btn" onclick="closePlayer()" title="Chiudi">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="link-switcher" class="link-switcher"></div>
+        
+        <div class="video-container">
+            <iframe id="videoIframe" src="about:blank" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Proxy CORS
+        const PROXY = "https://corsproxy.io/?";
+        
+        // Variabili globali
+        let allEvents = [];
+        let isSearchActive = false;
+
+        // Funzione per aggiungere un'ora all'orario (ORA FISSA SEMPRE ATTIVA)
+        function addHourToTime(timeStr) {
+            if (!timeStr || timeStr === "--:--") return timeStr;
+            
+            try {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                let newHours = hours + 1;
+                
+                // Gestione overflow delle 24 ore
+                if (newHours >= 24) {
+                    newHours = newHours - 24;
+                }
+                
+                return `${newHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            } catch (e) {
+                return timeStr;
+            }
+        }
+
+        // Funzione per refresh degli eventi
+        function refreshEvents() {
+            const b64Data = document.getElementById('b64Input').value.trim().replace('b64:', '');
+            if (!b64Data) {
+                document.getElementById('status').innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Inserisci un codice Base64 prima di fare refresh</p>
+                `;
+                document.getElementById('status').className = 'status-message error';
+                return;
+            }
+            
+            // Animazione del pulsante refresh
+            const refreshBtn = document.querySelector('.nav-item:nth-child(3)');
+            refreshBtn.classList.add('refresh-active');
+            setTimeout(() => {
+                refreshBtn.classList.remove('refresh-active');
+            }, 500);
+            
+            // Nascondi la ricerca se attiva
+            if (isSearchActive) {
+                showHome();
+            }
+            
+            // Ricarica gli eventi
+            loadList();
+            updateNavItem(2);
+        }
+
+        // Aggiorna statistiche
+        function updateStats(eventsCount, linksCount) {
+            document.getElementById('totalEvents').textContent = eventsCount;
+            document.getElementById('totalLinks').textContent = linksCount;
+            
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                              now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('updateTime').textContent = timeString;
+        }
+
+        // Funzioni di utilità
+        function showHome() {
+            // Nascondi barra di ricerca
+            document.getElementById('searchContainer').style.display = 'none';
+            isSearchActive = false;
+            
+            // Pulisci campo di ricerca
+            document.getElementById('searchInput').value = '';
+            
+            // Mostra tutti gli eventi
+            filterEvents('');
+            
+            // Scrolla in alto
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Aggiorna navigazione
+            updateNavItem(0);
+        }
+
+        function showSearch() {
+            // Mostra barra di ricerca
+            document.getElementById('searchContainer').style.display = 'block';
+            isSearchActive = true;
+            
+            // Focus sul campo di ricerca
+            setTimeout(() => document.getElementById('searchInput').focus(), 100);
+            
+            // Aggiorna navigazione
+            updateNavItem(1);
+        }
+
+        function showInfo() {
+            // Nascondi barra di ricerca se attiva
+            if (isSearchActive) {
+                showHome();
+            }
+            
+            alert("📀 Sports Player v2.0\n\n📱Un'app Android-style per lo streaming di eventi sportivi.\n\n🔑 Inserisci un codice per caricare gli Eventi\n🕑 Gli orari vengono automaticamente Aggiornati\n🔄 Usa il pulsante Refresh per aggiornare gli eventi\n🔎 Ricerca eventi per nome, orario o sport");
+            updateNavItem(3);
+        }
+
+        function updateNavItem(index) {
+            document.querySelectorAll('.nav-item').forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Pulisci ricerca
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filterEvents('');
+        }
+
+        // Funzione per filtrare gli eventi
+        function filterEvents(searchTerm) {
+            if (!allEvents || allEvents.length === 0) {
+                return;
+            }
+            
+            searchTerm = searchTerm.toLowerCase().trim();
+            const container = document.getElementById('button-container');
+            const cards = container.getElementsByClassName('event-card');
+            let visibleCount = 0;
+            
+            // Se la ricerca è vuota, mostra tutti gli eventi
+            if (!searchTerm) {
+                Array.from(cards).forEach(card => {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                });
+                
+                if (allEvents.length > 0) {
+                    document.getElementById('status').innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <p>Mostrati tutti ${allEvents.length} eventi</p>
+                    `;
+                    document.getElementById('status').className = 'status-message success';
+                }
+                return;
+            }
+            
+            // Cerca in tutti gli eventi
+            allEvents.forEach((event, index) => {
+                const card = cards[index];
+                if (!card) return;
+                
+                // Usa l'orario visualizzato corretto
+                const eventTime = (event.displayTime || event.time || '').toLowerCase();
+                const eventName = (event.name || '').toLowerCase();
+                const eventSport = (detectSport(event.name) || '').toLowerCase();
+                
+                // Cerca nel nome, nell'orario e nel tipo di sport
+                const matches = eventName.includes(searchTerm) || 
+                               eventTime.includes(searchTerm) || 
+                               eventSport.includes(searchTerm);
+                
+                if (matches) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                    // Evidenzia brevemente i risultati trovati
+                    card.style.animation = 'none';
+                    setTimeout(() => {
+                        card.style.animation = 'highlight 1.5s ease';
+                    }, 10);
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Aggiorna messaggio di stato
+            const status = document.getElementById('status');
+            if (visibleCount === 0 && searchTerm) {
+                status.innerHTML = `
+                    <i class="fas fa-search"></i>
+                    <p>Nessun evento trovato per "${searchTerm}"</p>
+                `;
+                status.className = 'status-message error';
+            } else if (searchTerm) {
+                status.innerHTML = `
+                    <i class="fas fa-search"></i>
+                    <p>Trovati ${visibleCount} eventi per "${searchTerm}"</p>
+                `;
+                status.className = 'status-message success';
+            }
+        }
+
+        // Rileva sport dal nome dell'evento
+        function detectSport(eventName) {
+            if (!eventName) return 'Sport';
+            
+            const name = eventName.toLowerCase();
+            
+            if (name.includes('calcio') || name.includes('football') || name.includes('serie a') || name.includes('champions')) {
+                return 'Calcio';
+            } else if (name.includes('basket') || name.includes('nba')) {
+                return 'Basket';
+            } else if (name.includes('tennis')) {
+                return 'Tennis';
+            } else if (name.includes('formula') || name.includes('f1') || name.includes('motogp')) {
+                return 'Motori';
+            } else if (name.includes('rugby')) {
+                return 'Rugby';
+            } else if (name.includes('golf')) {
+                return 'Golf';
+            } else if (name.includes('boxe') || name.includes('ufc')) {
+                return 'Combattimento';
+            } else if (name.includes('pallavolo') || name.includes('volley')) {
+                return 'Pallavolo';
+            } else {
+                return 'Sport';
+            }
+        }
+
+        // Ottieni icona sport
+        function getSportIcon(sportType) {
+            switch(sportType) {
+                case 'Calcio': return 'futbol';
+                case 'Basket': return 'basketball-ball';
+                case 'Tennis': return 'table-tennis';
+                case 'Motori': return 'flag-checkered';
+                case 'Rugby': return 'football-ball';
+                case 'Golf': return 'golf-ball';
+                case 'Combattimento': return 'fist-raised';
+                case 'Pallavolo': return 'volleyball-ball';
+                default: return 'running';
+            }
+        }
+
+        // Funzioni principali
+        function closePlayer() {
+            document.getElementById('player-overlay').classList.remove('active');
+            document.getElementById('videoIframe').src = "about:blank";
+        }
+
+        async function loadList() {
+            const b64Data = document.getElementById('b64Input').value.trim().replace('b64:', '');
+            if (!b64Data) {
+                document.getElementById('status').innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Inserisci un codice Base64 valido</p>
+                `;
+                document.getElementById('status').className = 'status-message error';
+                return;
+            }
+
+            const container = document.getElementById('button-container');
+            container.innerHTML = "";
+            const loadBtn = document.getElementById('loadBtn');
+            const originalHTML = loadBtn.innerHTML;
+            
+            // Animazione pulsante
+            loadBtn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> CARICAMENTO';
+            loadBtn.classList.add('loading');
+            loadBtn.disabled = true;
+            
+            document.getElementById('status').innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span> Caricamento eventi...';
+            document.getElementById('status').className = 'status-message';
+            
+            // Nascondi la ricerca se attiva
+            if (isSearchActive) {
+                showHome();
+            }
+            
+            // Reset
+            allEvents = [];
+
+            try {
+                const targetUrl = atob(b64Data);
+                const response = await fetch(PROXY + encodeURIComponent(targetUrl));
+                const data = await response.text();
+                
+                // Parsing originale
+                const rawLines = data.split(/\s(?=\d{2}:\d{2})|\n/).filter(l => l.trim().length > 5);
+                const blacklist = ["24/7 CHANNELS", "LINK", "𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠", "TELEGRAM"];
+
+                const groupedEvents = {};
+                let totalLinks = 0;
+
+                rawLines.forEach(line => {
+                    const isBlacklisted = blacklist.some(word => line.toUpperCase().includes(word.toUpperCase()));
+                    if (isBlacklisted) return;
+
+                    const urlMatch = line.match(/https?:\/\/[^\s]+/);
+                    if (!urlMatch) return;
+
+                    const url = urlMatch[0];
+                    totalLinks++;
+                    
+                    const namePart = line.replace(url, "").replace("|", "").trim();
+                    const timeMatch = namePart.match(/^\d{2}:\d{2}/);
+                    
+                    // Estrai orario originale
+                    const originalTime = timeMatch ? timeMatch[0] : "--:--";
+                    
+                    // Calcola orario visualizzato (con aggiunta di un'ora FISSA)
+                    let displayTime = originalTime;
+                    if (originalTime !== "--:--") {
+                        displayTime = addHourToTime(originalTime);
+                    }
+                    
+                    const cleanName = timeMatch ? namePart.replace(timeMatch[0], "").trim() : namePart;
+
+                    const key = `${originalTime}-${cleanName.toLowerCase()}`;
+
+                    if (!groupedEvents[key]) {
+                        groupedEvents[key] = { 
+                            originalTime: originalTime,
+                            time: displayTime, 
+                            displayTime: displayTime, // Memorizza anche displayTime
+                            name: cleanName, 
+                            links: [] 
+                        };
+                    }
+                    groupedEvents[key].links.push(url);
+                });
+
+                allEvents = Object.values(groupedEvents);
+                
+                // Crea eventi
+                allEvents.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    
+                    const sportType = detectSport(event.name);
+                    
+                    card.innerHTML = `
+                        <div class="event-header">
+                            <div class="event-time">
+                                <i class="fas fa-clock"></i> ${event.time}
+                            </div>
+                            <div class="event-links">${event.links.length} <i class="fas fa-link"></i></div>
+                        </div>
+                        <div class="event-body">
+                            <div class="event-title">${event.name}</div>
+                            <div class="event-sport">
+                                <i class="fas fa-${getSportIcon(sportType)}"></i> ${sportType}
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <div class="event-quality">${event.links.length > 2 ? "HD" : "SD"} Stream</div>
+                            <button class="play-button">
+                                <i class="fas fa-play"></i> GUARDA
+                            </button>
+                        </div>
+                    `;
+
+                    card.onclick = () => openPlayer(event);
+                    container.appendChild(card);
+                });
+
+                // Aggiorna stats
+                updateStats(allEvents.length, totalLinks);
+                
+                // Successo
+                document.getElementById('status').innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <p>${allEvents.length} eventi caricati</p>
+                `;
+                document.getElementById('status').className = 'status-message success';
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('status').innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Errore nel caricamento: ${err.message}</p>
+                `;
+                document.getElementById('status').className = 'status-message error';
+                updateStats(0, 0);
+            } finally {
+                // Ripristina pulsante
+                loadBtn.innerHTML = originalHTML;
+                loadBtn.classList.remove('loading');
+                loadBtn.disabled = false;
+            }
+        }
+
+        function openPlayer(event) {
+            document.getElementById('current-title').innerText = event.name;
+            const switcher = document.getElementById('link-switcher');
+            switcher.innerHTML = "";
+
+            event.links.forEach((link, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'link-btn' + (index === 0 ? ' active' : '');
+                btn.innerHTML = `<i class="fas fa-play-circle"></i> Stream ${index + 1}`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.link-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('videoIframe').src = link;
+                };
+                switcher.appendChild(btn);
+            });
+
+            document.getElementById('videoIframe').src = event.links[0];
+            document.getElementById('player-overlay').classList.add('active');
+        }
+        
+        // Controlli player
+        document.getElementById('refresh-player').addEventListener('click', function() {
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = iframe.src;
+        });
+        
+        document.getElementById('fullscreen-btn').addEventListener('click', function() {
+            const iframe = document.getElementById('videoIframe');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        });
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            // Stats iniziali
+            updateStats(0, 0);
+            
+            // Tasti rapidi
+            document.getElementById('b64Input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') loadList();
+            });
+            
+            // Ricerca live
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                filterEvents(e.target.value);
+            });
+            
+            // Ctrl+F per ricerca
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    showSearch();
+                }
+            });
+            
+            // Aggiungi stile per l'animazione di highlight
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes highlight {
+                    0% { background: rgba(26, 115, 232, 0.2); }
+                    100% { background: var(--surface); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
